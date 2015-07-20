@@ -36,7 +36,7 @@ angular.module('contactsApp')
                 };
 
                 $scope.blurUpdate = function () {
-                    if ($scope.live && $scope.live !== 'false') { //use string comp. since its a string                        
+                    if ($scope.live !== 'false') { //use string comp. since its a string                        
                         $scope.record.$update(function (updatedRecord) {
                             $scope.record = updatedRecord; //sends value to server and set the returned value to scope's record value
                         });
@@ -77,13 +77,14 @@ angular.module('contactsApp')
             };
 
             $scope.add = function () {
-                console.log('result before filter '+ $scope.field.name);
-                var aft= $filter('camelCase')($scope.field.name);
-                console.log('result after filter '+ aft);
+                console.log('result before filter ' + $scope.field.name);
+                var aft = $filter('camelCase')($scope.field.name);
+                console.log('result after filter ' + aft);
                 if (form.newField.$valid) {
                     $scope.record[$filter('camelCase')($scope.field.name)] = [$scope.field.value, $scope.field.type];
                     $scope.remove();
                     if ($scope.live !== 'false') {
+                        console.log("Update the new added field PUT");
                         $scope.record.$update(function (updatedRecord) {
                             $scope.record = updatedRecord;
                         });
