@@ -15,7 +15,7 @@ angular.module('contactsApp')
     .directive('formField', function ($timeout, FieldTypes) {
         return {
             restrict: 'EA',
-            templateUrl: 'views/formField.html',
+            templateUrl: 'views/form-field.html',
             replace: true, // if set to false, HTML is going to be placed inside the html tag
             scope: {
                 record: '=', // 2 way binding so changes are made to the contact(record) object
@@ -36,7 +36,10 @@ angular.module('contactsApp')
                 };
 
                 $scope.blurUpdate = function () {
-                    if ($scope.live !== 'false') { //use string comp. since its a string
+                    console.log("scope.live is " +$scope.required);
+
+                    if ($scope.live&&$scope.live !== 'false') { //use string comp. since its a string
+//                        console.log("in blurUpdate");
                         $scope.record.$update(function (updatedRecord) {
                             $scope.record = updatedRecord; //sends value to server and set the returned value to scope's record value
                         });
