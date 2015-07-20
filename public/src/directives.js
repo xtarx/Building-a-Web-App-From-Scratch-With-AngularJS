@@ -36,10 +36,7 @@ angular.module('contactsApp')
                 };
 
                 $scope.blurUpdate = function () {
-                    console.log("scope.live is " +$scope.required);
-
-                    if ($scope.live&&$scope.live !== 'false') { //use string comp. since its a string
-//                        console.log("in blurUpdate");
+                    if ($scope.live && $scope.live !== 'false') { //use string comp. since its a string                        
                         $scope.record.$update(function (updatedRecord) {
                             $scope.record = updatedRecord; //sends value to server and set the returned value to scope's record value
                         });
@@ -47,9 +44,52 @@ angular.module('contactsApp')
                 };
                 var saveTimeout;
                 $scope.update = function () {
-                    $timeout.cancel(saveTimeout); 
+                    $timeout.cancel(saveTimeout);
                     saveTimeout = $timeout($scope.blurUpdate, 1000);
                 };
             }
         };
-    });
+    })
+
+
+.directive('newField', function ($filter, FieldTypes) {
+    return {
+        restrict: 'EA',
+        templateUrl: 'views/new-field.html',
+        replace: true,
+        scope: {
+            record: '=',
+            live: '@'
+        },
+        require: '^form',
+        link: function ($scope, element, attr, form) {
+            $scope.types = FieldTypes;
+            $scope.field = {};
+
+            $scope.show = function (type) {
+                $scope.field.type = type;
+                $scope.display = true;
+            };
+
+            $scope.remove = function () {
+                $scope.field = {};
+                $scope.display = false;
+            };
+
+            $scope.add = function () {
+                console.log('result before filter '+ $scope.field.name);
+                var aft= $filter('camelCase')($scope.field.name);
+                console.log('result after filter '+ aft);
+                if (form.newField.$valid) {
+                    $scope.record[$filter('camelCase')($scope.field.name)] = [$scope.field.value, $scope.field.type];
+                    $scope.remove();
+                    if ($scope.live !== 'false') {
+                        $scope.record.$update(function (updatedRecord) {
+                            $scope.record = updatedRecord;
+                        });
+                    }
+                }
+            };
+        }
+    };
+});
